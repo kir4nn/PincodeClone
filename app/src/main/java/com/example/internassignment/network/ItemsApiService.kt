@@ -18,3 +18,9 @@ interface ItemsApiService {
     @GET("/6773a474ad19ca34f8e37d1a")
     suspend fun getItems(): ApiResponse
 }
+
+object ItemsApi {
+    val retrofitService: ItemsApiService by lazy {
+        retrofit.create(ItemsApiService::class.java)
+    }
+}

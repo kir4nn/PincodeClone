@@ -21,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.internassignment.ui.navigation.NavigationItem
 import com.example.internassignment.ui.screens.AddItemScreen
+import com.example.internassignment.ui.screens.ExploreGridScreen
 import com.example.internassignment.ui.screens.ExploreListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +86,7 @@ fun MainScreen() {
                 ExploreListScreen()
             }
             composable(NavigationItem.ExploreGrid.route) {
-                Text("Explore Grid Screen") // Temporary placeholder
+                ExploreGridScreen()
             }
             composable(NavigationItem.AddItem.route) {
                 AddItemScreen()
