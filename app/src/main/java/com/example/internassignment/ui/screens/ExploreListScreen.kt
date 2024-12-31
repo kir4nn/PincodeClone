@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.internassignment.ui.common.CommonSearchBar
 import com.example.internassignment.ui.common.CommonTopBar
@@ -24,7 +24,7 @@ import com.example.internassignment.viewmodel.ItemsViewModel
 
 @Composable
 fun ExploreListScreen(
-    viewModel: ItemsViewModel= viewModel()
+    viewModel: ItemsViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -37,7 +37,7 @@ fun ExploreListScreen(
                     onSearchTextChange = { searchText = it }
                 )
             }
-        }
+        },
     ) { paddingValues ->
         when (val itemsUiState = viewModel.itemsUiState) {
             is ItemsUiState.Loading -> LoadingScreen()
@@ -48,9 +48,9 @@ fun ExploreListScreen(
             ) {
                 items(itemsUiState.items) { item ->
                     ListItemView(item)
-                    HorizontalDivider()
                 }
             }
+
             is ItemsUiState.Error -> ErrorScreen()
         }
     }

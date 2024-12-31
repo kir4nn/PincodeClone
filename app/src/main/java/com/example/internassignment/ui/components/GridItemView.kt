@@ -12,6 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.internassignment.model.Item
 
@@ -28,7 +33,7 @@ fun GridItemView(item: Item) {
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .background(
-                    MaterialTheme.colorScheme.surfaceVariant,
+                    Color(0xFFF6F6F6),
                     RoundedCornerShape(8.dp)
                 )
         )
@@ -38,8 +43,19 @@ fun GridItemView(item: Item) {
             modifier = Modifier.padding(top = 8.dp)
         )
         Text(
-            text = "₹${item.price}",
-            style = MaterialTheme.typography.bodyMedium
+            text = buildAnnotatedString {
+                append("MRP: ")
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                ) {
+                    append("₹" + item.price)
+                }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
         )
     }
 }

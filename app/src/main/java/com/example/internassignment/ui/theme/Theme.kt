@@ -21,7 +21,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color.Black,
     surfaceVariant = Color.White,
     outline = Color.Black.copy(alpha = 0.12f),
-    onSurfaceVariant = Color.Black.copy(alpha = 0.6f)
+    onSurfaceVariant = Color.Black.copy(alpha = 0.6f),
 )
 
 private val DarkColorScheme = darkColorScheme(
