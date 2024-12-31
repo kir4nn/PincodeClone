@@ -25,7 +25,7 @@ class ItemsViewModel : ViewModel() {
         getItems()
     }
 
-    fun getItems() {
+    private fun getItems() {
         viewModelScope.launch {
             itemsUiState = ItemsUiState.Loading
             itemsUiState = try {

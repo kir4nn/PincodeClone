@@ -7,15 +7,20 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.http.GET
 
-private const val BASE_URL = "https://api.jsonbin.io/v3/b"
+private const val BASE_URL = "https://api.jsonbin.io/v3/b/"
+
+private val json = Json {
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+}
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(BASE_URL)
     .build()
 
 interface ItemsApiService {
-    @GET("/6773a474ad19ca34f8e37d1a")
+    @GET("6773a474ad19ca34f8e37d1a")
     suspend fun getItems(): ApiResponse
 }
 
