@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -49,7 +51,8 @@ fun CommonSearchBar(
         OutlinedTextField(
             value = searchText,
             onValueChange = onSearchTextChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             placeholder = { Text("Search", fontSize = 14.sp) },
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -57,8 +60,12 @@ fun CommonSearchBar(
                 unfocusedBorderColor = Color.Transparent,
                 focusedBorderColor = Color.Transparent
             ),
-            shape = RoundedCornerShape(8.dp),
-            singleLine = true
+            shape = RoundedCornerShape(32.dp),
+            singleLine = true,
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 14.sp,
+                lineHeight = 20.sp  // Added line height
+            )
         )
     }
 }

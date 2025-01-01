@@ -30,7 +30,8 @@ class ItemsViewModel(
     var itemsUiState: ItemsUiState by mutableStateOf(ItemsUiState.Loading)
         private set
 
-
+    // Store the original unfiltered items
+    private var allItems: List<Item> = emptyList()
 
     init {
         getItems()
@@ -42,12 +43,23 @@ class ItemsViewModel(
             itemsUiState = try {
 //                val response = ItemsApi.retrofitService.getItems()
 //                val items = response.record.data.items
-                val items = repository.getAllItems()
-                ItemsUiState.Success(items)
+                allItems = repository.getAllItems()
+                ItemsUiState.Success(allItems)
             } catch (e: Exception) {
                 ItemsUiState.Error
             }
         }
+    }
+
+    fun filterItems(query: String) {
+        if (query.isEmpty()) {
+            itemsUiState = ItemsUiState.Success(allItems)
+            return
+        }
+        val filteredItems = allItems.filter { item ->
+            item.name.contains(query, ignoreCase = true)
+        }
+        itemsUiState = ItemsUiState.Success(filteredItems)
     }
 
     fun addItem(item: Item) {
