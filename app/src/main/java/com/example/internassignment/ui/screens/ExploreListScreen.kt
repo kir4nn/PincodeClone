@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,10 @@ fun ExploreListScreen(
 ) {
     var searchText by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        viewModel.getItems()
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -44,7 +49,10 @@ fun ExploreListScreen(
             is ItemsUiState.Success -> LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 90.dp
+                    )
             ) {
                 items(itemsUiState.items) { item ->
                     ListItemView(item)

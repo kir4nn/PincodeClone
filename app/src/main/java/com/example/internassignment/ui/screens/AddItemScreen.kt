@@ -17,9 +17,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,18 +48,27 @@ fun AddItemScreen(
     var itemName by remember { mutableStateOf("") }
     var itemPrice by remember { mutableStateOf("") }
     var shippingMethod by remember { mutableStateOf("") }
+    var hasAttemptedSubmit by remember { mutableStateOf(false) }
+
+    val isValid = itemName.isNotEmpty() &&
+            itemPrice.isNotEmpty() &&
+            shippingMethod.isNotEmpty()
 
     val handleSubmit = {
-        val newItem = Item(
-            name = itemName,
-            price = itemPrice,
-            extra = shippingMethod
-        )
-        viewModel.addItem(newItem)
-        //navigate to tab 2
-        navController.navigate(NavigationItem.ExploreGrid.route) {
-            popUpTo(navController.graph.startDestinationId)
-            launchSingleTop = true
+        if (isValid) {
+            val newItem = Item(
+                name = itemName,
+                price = itemPrice,
+                // Convert "None" to empty string, keep other values as is
+                extra = if (shippingMethod == "None") "" else shippingMethod
+            )
+            viewModel.addItem(newItem)
+            navController.navigate(NavigationItem.ExploreGrid.route) {
+                popUpTo(navController.graph.startDestinationId)
+                launchSingleTop = true
+            }
+        } else {
+            hasAttemptedSubmit = true
         }
     }
 
@@ -79,7 +90,7 @@ fun AddItemScreen(
                     Text(
                         text = "Add",
                         color = Color(0xFF4CAF50),
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clickable() {
                             handleSubmit()
                         }
                     )
@@ -95,7 +106,9 @@ fun AddItemScreen(
             onItemPriceChange = { itemPrice = it },
             shippingMethod = shippingMethod,
             onShippingMethodChange = { shippingMethod = it },
-            onSubmit = handleSubmit
+            onSubmit = handleSubmit,
+            hasAttemptedSubmit = hasAttemptedSubmit,
+            isValid = isValid
         )
     }
 }
@@ -110,12 +123,19 @@ private fun AddItemContent(
     onItemPriceChange: (String) -> Unit,
     shippingMethod: String,
     onShippingMethodChange: (String) -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
+    hasAttemptedSubmit: Boolean,
+    isValid: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedShippingMethod by remember { mutableStateOf(shippingMethod) }
 
     val pattern = remember { Regex("^\\d+\$") }
+
+    // Define error states
+    val showNameError = hasAttemptedSubmit && itemName.isEmpty()
+    val showPriceError = hasAttemptedSubmit && itemPrice.isEmpty()
+    val showShippingError = hasAttemptedSubmit && shippingMethod.isEmpty()
 
     Column(
         modifier = modifier
@@ -123,43 +143,57 @@ private fun AddItemContent(
             .padding(30.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Item Name Field
         OutlinedTextField(
             value = itemName,
             onValueChange = onItemNameChange,
             label = { Text("Item Name") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
+            isError = showNameError,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surface,
+            ),
         )
 
-        // Item Price Field
         OutlinedTextField(
             value = itemPrice,
             label = { Text("Item Price") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             onValueChange = {
-                if (it.isNotEmpty() || it.matches(pattern)) {
+                if (it.isEmpty() || it.matches(pattern)) {
                     onItemPriceChange(it)
                 }
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = showPriceError,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surface,
+            ),
         )
 
-        // Shipping Method Field (clickable to show dropdown)
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = it }
         ) {
             OutlinedTextField(
                 value = selectedShippingMethod,
-                onValueChange = {},
+                onValueChange = { },
                 readOnly = true,
                 label = { Text("Shipping Method") },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = colorScheme.surface,
+                    unfocusedContainerColor = colorScheme.surface,
+                    disabledContainerColor = colorScheme.surface,
+                ),
+                isError = showShippingError,
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .menuAnchor()
@@ -170,34 +204,33 @@ private fun AddItemContent(
                 onDismissRequest = { expanded = false },
             ) {
                 DropdownMenuItem(
-                    text = {
-                        Text(text = "Same Day Shipping")
-                    },
+                    text = { Text(text = "Same Day Shipping") },
                     onClick = {
                         selectedShippingMethod = "Same Day Shipping"
+                        onShippingMethodChange("Same Day Shipping")
                         expanded = false
                     }
                 )
                 DropdownMenuItem(
-                    text = {
-                        Text(text = "None")
-                    },
+                    text = { Text(text = "None") },
                     onClick = {
-                        selectedShippingMethod = ""
+                        selectedShippingMethod = "None"
+                        onShippingMethodChange("None")
                         expanded = false
                     }
                 )
             }
         }
 
-        // Submit Button
         Button(
             onClick = onSubmit,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5DB075))
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF5DB075),
+            ),
         ) {
             Text("Submit", color = Color.White)
         }
