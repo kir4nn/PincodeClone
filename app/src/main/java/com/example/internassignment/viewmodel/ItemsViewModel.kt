@@ -6,10 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.internassignment.model.Item
-import com.example.internassignment.network.ItemsApi
+import com.example.internassignment.repository.ItemsRepository
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 sealed interface ItemsUiState {
     data class Success(val items: List<Item>) : ItemsUiState
@@ -17,7 +15,9 @@ sealed interface ItemsUiState {
     object Loading : ItemsUiState
 }
 
-class ItemsViewModel : ViewModel() {
+class ItemsViewModel(
+    private val repository: ItemsRepository
+) : ViewModel() {
     var itemsUiState: ItemsUiState by mutableStateOf(ItemsUiState.Loading)
         private set
 
@@ -29,13 +29,23 @@ class ItemsViewModel : ViewModel() {
         viewModelScope.launch {
             itemsUiState = ItemsUiState.Loading
             itemsUiState = try {
-                val response = ItemsApi.retrofitService.getItems()
-                val items = response.record.data.items
+//                val response = ItemsApi.retrofitService.getItems()
+//                val items = response.record.data.items
+                val items = repository.getAllItems()
                 ItemsUiState.Success(items)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 ItemsUiState.Error
-            } catch (e: HttpException) {
-                ItemsUiState.Error
+            }
+        }
+    }
+
+    fun addItem(item: Item) {
+        viewModelScope.launch {
+            try {
+                repository.insertItem(item)
+                getItems()
+            } catch (e: Exception) {
+                itemsUiState = ItemsUiState.Error
             }
         }
     }

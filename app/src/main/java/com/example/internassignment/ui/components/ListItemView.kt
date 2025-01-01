@@ -60,7 +60,6 @@ fun ListItemView(item: Item) {
                         append("MRP: ")
                         withStyle(
                             style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
                         ) {

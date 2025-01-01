@@ -1,5 +1,6 @@
 package com.example.internassignment.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,14 +31,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.internassignment.model.Item
 import com.example.internassignment.ui.common.CommonTopBar
+import com.example.internassignment.ui.navigation.NavigationItem
+import com.example.internassignment.viewmodel.ItemsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemScreen() {
+fun AddItemScreen(
+    viewModel: ItemsViewModel,
+    navController: NavHostController
+) {
     var itemName by remember { mutableStateOf("") }
     var itemPrice by remember { mutableStateOf("") }
     var shippingMethod by remember { mutableStateOf("") }
+
+    val handleSubmit = {
+        val newItem = Item(
+            name = itemName,
+            price = itemPrice,
+            extra = shippingMethod
+        )
+        viewModel.addItem(newItem)
+        //navigate to tab 2
+        navController.navigate(NavigationItem.ExploreGrid.route) {
+            popUpTo(navController.graph.startDestinationId)
+            launchSingleTop = true
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -53,11 +75,13 @@ fun AddItemScreen() {
                     Text(
                         text = "Add Item",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-
-                        )
+                    )
                     Text(
                         text = "Add",
-                        color = Color(0xFF4CAF50)
+                        color = Color(0xFF4CAF50),
+                        modifier = Modifier.clickable {
+                            handleSubmit()
+                        }
                     )
                 }
             }
@@ -70,7 +94,8 @@ fun AddItemScreen() {
             itemPrice = itemPrice,
             onItemPriceChange = { itemPrice = it },
             shippingMethod = shippingMethod,
-            onShippingMethodChange = { shippingMethod = it }
+            onShippingMethodChange = { shippingMethod = it },
+            onSubmit = handleSubmit
         )
     }
 }
@@ -84,7 +109,8 @@ private fun AddItemContent(
     itemPrice: String,
     onItemPriceChange: (String) -> Unit,
     shippingMethod: String,
-    onShippingMethodChange: (String) -> Unit
+    onShippingMethodChange: (String) -> Unit,
+    onSubmit: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedShippingMethod by remember { mutableStateOf(shippingMethod) }
@@ -157,7 +183,7 @@ private fun AddItemContent(
                         Text(text = "None")
                     },
                     onClick = {
-                        selectedShippingMethod = "None"
+                        selectedShippingMethod = ""
                         expanded = false
                     }
                 )
@@ -166,7 +192,7 @@ private fun AddItemContent(
 
         // Submit Button
         Button(
-            onClick = { /* Will handle later */ },
+            onClick = onSubmit,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

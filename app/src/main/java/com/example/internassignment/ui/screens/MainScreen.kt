@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,10 +24,13 @@ import com.example.internassignment.ui.navigation.NavigationItem
 import com.example.internassignment.ui.screens.AddItemScreen
 import com.example.internassignment.ui.screens.ExploreGridScreen
 import com.example.internassignment.ui.screens.ExploreListScreen
+import com.example.internassignment.viewmodel.ItemsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    viewModel: ItemsViewModel = viewModel()
+) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -89,7 +93,10 @@ fun MainScreen() {
                 ExploreGridScreen()
             }
             composable(NavigationItem.AddItem.route) {
-                AddItemScreen()
+                AddItemScreen(
+                    viewModel = viewModel,
+                    navController = navController
+                )
             }
             composable(NavigationItem.ScreenFour.route) {
                 Text("Screen Four") // Temporary placeholder
