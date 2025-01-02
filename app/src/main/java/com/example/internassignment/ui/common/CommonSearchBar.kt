@@ -31,6 +31,7 @@ fun CommonSearchBar(
     onPriceRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
     sameDayShippingOnly: Boolean,
     onSameDayShippingChange: (Boolean) -> Unit,
+    onResetFilters: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box {
@@ -86,7 +87,7 @@ fun CommonSearchBar(
                 onPriceRangeChange = onPriceRangeChange,
                 sameDayShippingOnly = sameDayShippingOnly,
                 onSameDayShippingChange = onSameDayShippingChange,
-                onSubmit = onFilterClick
+                onCancel = onResetFilters,
             )
         }
     }

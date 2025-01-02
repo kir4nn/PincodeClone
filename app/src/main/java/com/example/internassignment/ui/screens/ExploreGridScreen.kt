@@ -1,13 +1,11 @@
 package com.example.internassignment.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -56,7 +54,8 @@ fun ExploreGridScreen(
                     priceRange = viewModel.priceRange,
                     onPriceRangeChange = { viewModel.updatePriceRange(it) },
                     sameDayShippingOnly = viewModel.sameDayShippingOnly,
-                    onSameDayShippingChange = { viewModel.toggleSameDayShipping(it) }
+                    onSameDayShippingChange = { viewModel.toggleSameDayShipping(it) },
+                    onResetFilters = { viewModel.resetFilters() },
                 )
             }
         }
@@ -94,6 +93,7 @@ fun ExploreGridScreen(
                     }
                 }
             }
+
             is ItemsUiState.Error -> ErrorScreen()
         }
     }

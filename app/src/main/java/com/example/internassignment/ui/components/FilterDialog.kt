@@ -22,7 +22,7 @@ fun FilterDialog(
     onPriceRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
     sameDayShippingOnly: Boolean,
     onSameDayShippingChange: (Boolean) -> Unit,
-    onSubmit: () -> Unit
+    onCancel: () -> Unit
 ) {
     if (showDialog) {
         AlertDialog(
@@ -60,7 +60,10 @@ fun FilterDialog(
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
+                TextButton(onClick = {
+                    onCancel()
+                    onDismiss()
+                }) {
                     Text("Cancel")
                 }
             }

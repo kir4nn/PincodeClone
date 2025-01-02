@@ -36,10 +36,13 @@ class ItemsViewModel(
     var showFilterDialog by mutableStateOf(false)
         private set
 
-    var priceRange by mutableStateOf(0f..5000f)
+    private val initialPriceRange = 0f..5000f
+    private val initialSameDayShipping = false
+
+    var priceRange by mutableStateOf(initialPriceRange)
         private set
 
-    var sameDayShippingOnly by mutableStateOf(false)
+    var sameDayShippingOnly by mutableStateOf(initialSameDayShipping)
         private set
 
     fun toggleFilterDialog() {
@@ -53,6 +56,12 @@ class ItemsViewModel(
 
     fun toggleSameDayShipping(enabled: Boolean) {
         sameDayShippingOnly = enabled
+        applyFilters()
+    }
+
+    fun resetFilters() {
+        priceRange = initialPriceRange
+        sameDayShippingOnly = initialSameDayShipping
         applyFilters()
     }
 
