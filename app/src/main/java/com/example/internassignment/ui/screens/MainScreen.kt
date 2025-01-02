@@ -97,10 +97,10 @@ fun MainScreen(
             )
         ) {
             composable(NavigationItem.ExploreList.route) {
-                ExploreListScreen()
+                ExploreListScreen(modifier = Modifier.fillMaxSize())
             }
             composable(NavigationItem.ExploreGrid.route) {
-                ExploreGridScreen()
+                ExploreGridScreen(modifier = Modifier.fillMaxSize())
             }
             composable(NavigationItem.AddItem.route) {
                 AddItemScreen(

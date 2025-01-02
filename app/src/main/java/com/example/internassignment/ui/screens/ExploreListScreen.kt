@@ -1,5 +1,6 @@
 package com.example.internassignment.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,16 +30,20 @@ import com.example.internassignment.viewmodel.ItemsViewModel
 
 @Composable
 fun ExploreListScreen(
-    viewModel: ItemsViewModel = viewModel()
+    viewModel: ItemsViewModel = viewModel(),
+    modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
+
 
     LaunchedEffect(Unit) {
         viewModel.getItems()
     }
 
-    LaunchedEffect(searchText) {
-        viewModel.filterItems(searchText)
+    LaunchedEffect(searchText, viewModel.itemsUiState) {
+        if (viewModel.itemsUiState is ItemsUiState.Success && searchText.isNotEmpty()) {
+            viewModel.filterItems(searchText)
+        }
     }
 
     Scaffold(
@@ -60,7 +65,11 @@ fun ExploreListScreen(
         },
     ) { paddingValues ->
         when (val itemsUiState = viewModel.itemsUiState) {
-            is ItemsUiState.Loading -> LoadingScreen()
+            is ItemsUiState.Loading -> {
+                Log.d("ExploreListScreen", "Showing loading")
+                LoadingScreen(modifier = modifier.fillMaxSize())
+            }
+
             is ItemsUiState.Success -> {
                 if (itemsUiState.items.isEmpty() && searchText.isNotEmpty()) {
                     // Show no results found
@@ -92,7 +101,7 @@ fun ExploreListScreen(
                 }
             }
 
-            is ItemsUiState.Error -> ErrorScreen()
+            is ItemsUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
         }
     }
 }

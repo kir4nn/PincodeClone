@@ -10,6 +10,7 @@ import com.example.internassignment.model.Item
 import com.example.internassignment.model.database.ItemDatabase
 import com.example.internassignment.network.ItemsApi
 import com.example.internassignment.repository.ItemsRepositoryImpl
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 sealed interface ItemsUiState {
@@ -65,7 +66,8 @@ class ItemsViewModel(
         applyFilters()
     }
 
-    fun applyFilters() {
+    private fun applyFilters() {
+        itemsUiState = ItemsUiState.Loading
         val filteredItems = allItems.filter { item ->
             val itemPrice = item.price.toFloatOrNull() ?: 0f
             val priceInRange = itemPrice >= priceRange.start && itemPrice <= priceRange.endInclusive
@@ -83,17 +85,20 @@ class ItemsViewModel(
         viewModelScope.launch {
             itemsUiState = ItemsUiState.Loading
             itemsUiState = try {
-//                val response = ItemsApi.retrofitService.getItems()
-//                val items = response.record.data.items
                 allItems = repository.getAllItems()
-                ItemsUiState.Success(allItems)
+                if (allItems.isEmpty()) {
+                    ItemsUiState.Error // Both local and remote data are empty
+                } else {
+                    ItemsUiState.Success(allItems) // Data fetched successfully
+                }
             } catch (e: Exception) {
-                ItemsUiState.Error
+                ItemsUiState.Error // Handle exceptions if any
             }
         }
     }
 
     fun filterItems(query: String) {
+        itemsUiState = ItemsUiState.Loading
         if (query.isEmpty()) {
             itemsUiState = ItemsUiState.Success(allItems)
             return

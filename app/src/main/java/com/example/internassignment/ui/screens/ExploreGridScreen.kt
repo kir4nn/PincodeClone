@@ -30,7 +30,8 @@ import com.example.internassignment.viewmodel.ItemsViewModel
 
 @Composable
 fun ExploreGridScreen(
-    viewModel: ItemsViewModel = viewModel()
+    viewModel: ItemsViewModel = viewModel(),
+    modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -38,8 +39,10 @@ fun ExploreGridScreen(
         viewModel.getItems()
     }
 
-    LaunchedEffect(searchText) {
-        viewModel.filterItems(searchText)
+    LaunchedEffect(searchText, viewModel.itemsUiState) {
+        if (viewModel.itemsUiState is ItemsUiState.Success) {
+            viewModel.filterItems(searchText)
+        }
     }
 
     Scaffold(
@@ -61,7 +64,7 @@ fun ExploreGridScreen(
         }
     ) { paddingValues ->
         when (val itemsUiState = viewModel.itemsUiState) {
-            is ItemsUiState.Loading -> LoadingScreen()
+            is ItemsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
             is ItemsUiState.Success -> {
                 if (itemsUiState.items.isEmpty() && searchText.isNotEmpty()) {
                     Box(
@@ -94,7 +97,7 @@ fun ExploreGridScreen(
                 }
             }
 
-            is ItemsUiState.Error -> ErrorScreen()
+            is ItemsUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
         }
     }
 }
