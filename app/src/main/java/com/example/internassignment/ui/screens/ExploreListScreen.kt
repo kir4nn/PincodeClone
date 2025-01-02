@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.internassignment.ui.common.CommonSearchBar
 import com.example.internassignment.ui.common.CommonTopBar
 import com.example.internassignment.ui.components.ErrorScreen
+import com.example.internassignment.ui.components.FilterDialog
 import com.example.internassignment.ui.components.ListItemView
 import com.example.internassignment.ui.components.LoadingScreen
 import com.example.internassignment.viewmodel.ItemsUiState
@@ -47,7 +48,13 @@ fun ExploreListScreen(
             CommonTopBar {
                 CommonSearchBar(
                     searchText = searchText,
-                    onSearchTextChange = { searchText = it }
+                    onSearchTextChange = { searchText = it },
+                    showFilterDialog = viewModel.showFilterDialog,
+                    onFilterClick = { viewModel.toggleFilterDialog() },
+                    priceRange = viewModel.priceRange,
+                    onPriceRangeChange = { viewModel.updatePriceRange(it) },
+                    sameDayShippingOnly = viewModel.sameDayShippingOnly,
+                    onSameDayShippingChange = { viewModel.toggleSameDayShipping(it) }
                 )
             }
         },

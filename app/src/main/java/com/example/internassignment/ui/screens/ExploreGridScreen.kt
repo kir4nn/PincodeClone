@@ -50,7 +50,13 @@ fun ExploreGridScreen(
             CommonTopBar {
                 CommonSearchBar(
                     searchText = searchText,
-                    onSearchTextChange = { searchText = it }
+                    onSearchTextChange = { searchText = it },
+                    showFilterDialog = viewModel.showFilterDialog,
+                    onFilterClick = { viewModel.toggleFilterDialog() },
+                    priceRange = viewModel.priceRange,
+                    onPriceRangeChange = { viewModel.updatePriceRange(it) },
+                    sameDayShippingOnly = viewModel.sameDayShippingOnly,
+                    onSameDayShippingChange = { viewModel.toggleSameDayShipping(it) }
                 )
             }
         }

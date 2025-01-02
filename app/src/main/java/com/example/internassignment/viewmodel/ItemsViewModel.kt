@@ -30,8 +30,44 @@ class ItemsViewModel(
     var itemsUiState: ItemsUiState by mutableStateOf(ItemsUiState.Loading)
         private set
 
-    // Store the original unfiltered items
+
     private var allItems: List<Item> = emptyList()
+
+    var showFilterDialog by mutableStateOf(false)
+        private set
+
+    var priceRange by mutableStateOf(0f..10000f)
+        private set
+
+    var sameDayShippingOnly by mutableStateOf(false)
+        private set
+
+    fun toggleFilterDialog() {
+        showFilterDialog = !showFilterDialog
+        if (!showFilterDialog) {
+            applyFilters()
+        }
+    }
+
+    fun updatePriceRange(range: ClosedFloatingPointRange<Float>) {
+        priceRange = range
+        applyFilters()
+    }
+
+    fun toggleSameDayShipping(enabled: Boolean) {
+        sameDayShippingOnly = enabled
+        applyFilters()
+    }
+
+    fun applyFilters() {
+        val filteredItems = allItems.filter { item ->
+            val itemPrice = item.price.toFloatOrNull() ?: 0f
+            val priceInRange = itemPrice >= priceRange.start && itemPrice <= priceRange.endInclusive
+            val shippingMatch = !sameDayShippingOnly || item.extra == "Same Day Shipping"
+            priceInRange && shippingMatch
+        }
+        itemsUiState = ItemsUiState.Success(filteredItems)
+    }
 
     init {
         getItems()
@@ -72,4 +108,5 @@ class ItemsViewModel(
             }
         }
     }
+
 }
