@@ -2,6 +2,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -111,6 +112,7 @@ fun MainScreen(
                 Text(
                     "Screen Four",
                     modifier = Modifier
+                        .fillMaxSize()
                         .wrapContentSize(Alignment.Center)
                 )
             }
@@ -118,6 +120,7 @@ fun MainScreen(
                 Text(
                     "Screen Five",
                     modifier = Modifier
+                        .fillMaxSize()
                         .wrapContentSize(Alignment.Center)
                 )
             }
