@@ -86,7 +86,7 @@ fun CommonSearchBar(
                 onPriceRangeChange = onPriceRangeChange,
                 sameDayShippingOnly = sameDayShippingOnly,
                 onSameDayShippingChange = onSameDayShippingChange,
-                onSubmit = onFilterClick  // Using onFilterClick as submit handler
+                onSubmit = onFilterClick
             )
         }
     }

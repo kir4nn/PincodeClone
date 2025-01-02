@@ -33,10 +33,10 @@ fun FilterDialog(
                     RangeSlider(
                         value = priceRange,
                         onValueChange = onPriceRangeChange,
-                        valueRange = 0f..10000f,
-                        steps = 100
+                        valueRange = 0f..5000f,
+                        steps = (5000f / 50f).toInt() - 1
                     )
-                    Text("Price: $${priceRange.start.toInt()} - $${priceRange.endInclusive.toInt()}")
+                    Text("Price: ₹${priceRange.start.toInt()} - ₹${priceRange.endInclusive.toInt()}")
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -52,10 +52,10 @@ fun FilterDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
-                    onSubmit()
-                    onDismiss()
-                }) {
+                TextButton(
+                    onClick =
+                    onDismiss
+                ) {
                     Text("Apply")
                 }
             },

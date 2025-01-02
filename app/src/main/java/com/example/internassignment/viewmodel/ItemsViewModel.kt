@@ -36,7 +36,7 @@ class ItemsViewModel(
     var showFilterDialog by mutableStateOf(false)
         private set
 
-    var priceRange by mutableStateOf(0f..10000f)
+    var priceRange by mutableStateOf(0f..5000f)
         private set
 
     var sameDayShippingOnly by mutableStateOf(false)
@@ -44,9 +44,6 @@ class ItemsViewModel(
 
     fun toggleFilterDialog() {
         showFilterDialog = !showFilterDialog
-        if (!showFilterDialog) {
-            applyFilters()
-        }
     }
 
     fun updatePriceRange(range: ClosedFloatingPointRange<Float>) {
