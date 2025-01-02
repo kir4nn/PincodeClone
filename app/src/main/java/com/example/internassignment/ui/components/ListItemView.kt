@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.internassignment.model.Item
@@ -31,7 +32,7 @@ fun ListItemView(item: Item) {
         Box(
             modifier = Modifier
                 .background(
-                    color = Color(0xFFF6F6F6),
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .size(56.dp)
@@ -56,16 +57,16 @@ fun ListItemView(item: Item) {
                     text = buildAnnotatedString {
                         append("MRP: ")
                         withStyle(
-                            style = SpanStyle(
-                                color = Color.Black
-                            )
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold // For bold text
+                            ).toSpanStyle()
                         ) {
                             append("₹" + item.price)
                         }
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
                 )
+
                 if (item.extra.isNotEmpty()) {
                     Text(
                         text = item.extra,

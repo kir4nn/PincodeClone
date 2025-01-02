@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.isSystemInDarkTheme
 
+
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF9CABF6),        // Your primary color
     surfaceContainerHighest = Color(0xFFE6E9F6),
@@ -22,6 +23,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = Color.White,
     outline = Color.Black.copy(alpha = 0.12f),
     onSurfaceVariant = Color.Black.copy(alpha = 0.6f),
+    surfaceContainerLow = Color(0xFFF6F6F6),
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -38,7 +40,8 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Color.White,
     surfaceVariant = Color(0xFF2C2C2C),
     outline = Color.White.copy(alpha = 0.12f),
-    onSurfaceVariant = Color.White.copy(alpha = 0.6f)
+    onSurfaceVariant = Color.White.copy(alpha = 0.6f),
+    surfaceContainerLow = Color(0xFF1E1E1E),
 )
 
 @Composable

@@ -42,7 +42,7 @@ fun MainScreen(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar(
-                containerColor = Color(0xFFFAFAFA),
+                containerColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.height(100.dp)
             ) {
                 val items = listOf(

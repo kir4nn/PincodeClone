@@ -54,7 +54,7 @@ fun CommonSearchBar(
                 Text(
                     text = "Filter",
                     fontSize = 16.sp,
-                    color = Color(0xFF4CAF50),
+                    color = Color(0xFF8fd991),
                     modifier = Modifier.clickable { onFilterClick() }
                 )
             }

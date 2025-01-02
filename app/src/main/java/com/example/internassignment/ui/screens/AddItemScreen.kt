@@ -89,7 +89,7 @@ fun AddItemScreen(
                     )
                     Text(
                         text = "Add",
-                        color = Color(0xFF4CAF50),
+                        color = Color(0xFF8fd991),
                         modifier = Modifier.clickable() {
                             handleSubmit()
                         }
@@ -148,7 +148,7 @@ private fun AddItemContent(
             onValueChange = onItemNameChange,
             label = { Text("Item Name") },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(32.dp),
             isError = showNameError,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.surface,
@@ -161,7 +161,7 @@ private fun AddItemContent(
             value = itemPrice,
             label = { Text("Item Price") },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(32.dp),
             onValueChange = {
                 if (it.isEmpty() || it.matches(pattern)) {
                     onItemPriceChange(it)
@@ -194,7 +194,7 @@ private fun AddItemContent(
                     disabledContainerColor = colorScheme.surface,
                 ),
                 isError = showShippingError,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(32.dp),
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -227,7 +227,7 @@ private fun AddItemContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(32.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF5DB075),
             ),
