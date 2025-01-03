@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">InternAssignment</string>
+    <string name="screen_five_name">Screen Five</string>
+    <string name="screen_four_name">Screen Four</string>
+    <string name="no_items_found">No items found</string>
+    <string name="error_msg">Something went wrong</string>
+    <string name="search_text">Search</string>
+    <string name="explore">Explore</string>
+    <string name="filter">Filter</string>
 </resources>

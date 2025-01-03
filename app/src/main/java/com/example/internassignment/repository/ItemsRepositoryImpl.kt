@@ -9,6 +9,7 @@ class ItemsRepositoryImpl(
     private val itemsApi: ItemsApiService,
     private val itemDao: ItemDao
 ) : ItemsRepository {
+
     override suspend fun getRemoteItems(): List<Item> {
         return itemsApi.getItems().record.data.items
     }

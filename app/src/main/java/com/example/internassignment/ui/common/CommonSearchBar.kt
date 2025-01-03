@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.internassignment.R
 import com.example.internassignment.ui.components.FilterDialog
 
 @Composable
@@ -45,14 +47,14 @@ fun CommonSearchBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Explore",
+                    text = stringResource(R.string.explore),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 )
                 Text(
-                    text = "Filter",
+                    text = stringResource(R.string.filter),
                     fontSize = 16.sp,
                     color = Color(0xFF8fd991),
                     modifier = Modifier.clickable { onFilterClick() }
@@ -63,7 +65,7 @@ fun CommonSearchBar(
                 value = searchText,
                 onValueChange = onSearchTextChange,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search", fontSize = 14.sp) },
+                placeholder = { Text(stringResource(R.string.search_text), fontSize = 14.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -88,6 +90,7 @@ fun CommonSearchBar(
                 sameDayShippingOnly = sameDayShippingOnly,
                 onSameDayShippingChange = onSameDayShippingChange,
                 onCancel = onResetFilters,
+
             )
         }
     }

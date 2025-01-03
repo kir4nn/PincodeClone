@@ -10,7 +10,6 @@ import com.example.internassignment.model.Item
 import com.example.internassignment.model.database.ItemDatabase
 import com.example.internassignment.network.ItemsApi
 import com.example.internassignment.repository.ItemsRepositoryImpl
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 sealed interface ItemsUiState {

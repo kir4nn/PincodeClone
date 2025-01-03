@@ -18,8 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.internassignment.R
 import com.example.internassignment.ui.common.CommonSearchBar
 import com.example.internassignment.ui.common.CommonTopBar
 import com.example.internassignment.ui.components.ErrorScreen
@@ -66,7 +68,6 @@ fun ExploreListScreen(
     ) { paddingValues ->
         when (val itemsUiState = viewModel.itemsUiState) {
             is ItemsUiState.Loading -> {
-                Log.d("ExploreListScreen", "Showing loading")
                 LoadingScreen(modifier = modifier.fillMaxSize())
             }
 
@@ -80,7 +81,7 @@ fun ExploreListScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No items found",
+                            text = stringResource(R.string.no_items_found),
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Gray
                         )

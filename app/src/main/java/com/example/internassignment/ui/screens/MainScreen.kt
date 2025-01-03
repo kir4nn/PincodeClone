@@ -20,17 +20,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.internassignment.R
 import com.example.internassignment.ui.navigation.NavigationItem
 import com.example.internassignment.ui.screens.AddItemScreen
 import com.example.internassignment.ui.screens.ExploreGridScreen
 import com.example.internassignment.ui.screens.ExploreListScreen
 import com.example.internassignment.viewmodel.ItemsViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,7 +113,7 @@ fun MainScreen(
             }
             composable(NavigationItem.ScreenFour.route) {
                 Text(
-                    "Screen Four",
+                    stringResource(R.string.screen_four_name),
                     modifier = Modifier
                         .fillMaxSize()
                         .wrapContentSize(Alignment.Center)
@@ -118,7 +121,7 @@ fun MainScreen(
             }
             composable(NavigationItem.ScreenFive.route) {
                 Text(
-                    "Screen Five",
+                    stringResource(R.string.screen_five_name),
                     modifier = Modifier
                         .fillMaxSize()
                         .wrapContentSize(Alignment.Center)
