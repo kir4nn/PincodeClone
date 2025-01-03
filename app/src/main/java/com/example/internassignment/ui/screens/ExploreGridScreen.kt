@@ -40,7 +40,7 @@ fun ExploreGridScreen(
     }
 
     LaunchedEffect(searchText, viewModel.itemsUiState) {
-        if (viewModel.itemsUiState is ItemsUiState.Success) {
+        if (viewModel.itemsUiState is ItemsUiState.Success && searchText.isNotEmpty()) {
             viewModel.filterItems(searchText)
         }
     }
