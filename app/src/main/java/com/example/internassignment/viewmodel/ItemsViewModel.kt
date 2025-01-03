@@ -10,12 +10,17 @@ import com.example.internassignment.model.Item
 import com.example.internassignment.model.database.ItemDatabase
 import com.example.internassignment.network.ItemsApi
 import com.example.internassignment.repository.ItemsRepositoryImpl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed interface ItemsUiState {
     data class Success(val items: List<Item>) : ItemsUiState
-    object Error : ItemsUiState
-    object Loading : ItemsUiState
+    data object Error : ItemsUiState
+    data object Loading : ItemsUiState
 }
 
 class ItemsViewModel(
@@ -27,8 +32,13 @@ class ItemsViewModel(
         ItemDatabase.getDatabase(application).itemDao()
     )
 
-    var itemsUiState: ItemsUiState by mutableStateOf(ItemsUiState.Loading)
-        private set
+    private val _itemsUiState = MutableStateFlow<ItemsUiState>(ItemsUiState.Loading)
+    val itemsUiState: StateFlow<ItemsUiState> = _itemsUiState.asStateFlow()
+
+    // Cache management
+    private var lastFetchTime: Long = 0
+    private val cacheTimeout = 1 * 60 * 1000 // 5 minutes
+    private var cachedItems: List<Item> = emptyList()
 
 
     private var allItems: List<Item> = emptyList()
@@ -51,12 +61,10 @@ class ItemsViewModel(
 
     fun updatePriceRange(range: ClosedFloatingPointRange<Float>) {
         priceRange = range
-//        applyFilters()
     }
 
     fun toggleSameDayShipping(enabled: Boolean) {
         sameDayShippingOnly = enabled
-//        applyFilters()
     }
 
     fun resetFilters() {
@@ -66,55 +74,69 @@ class ItemsViewModel(
     }
 
     fun applyFilters() {
-        itemsUiState = ItemsUiState.Loading
-        val filteredItems = allItems.filter { item ->
+        _itemsUiState.value = ItemsUiState.Loading
+        val filteredItems = cachedItems.filter { item ->
             val itemPrice = item.price.toFloatOrNull() ?: 0f
             val priceInRange = itemPrice >= priceRange.start && itemPrice <= priceRange.endInclusive
             val shippingMatch = !sameDayShippingOnly || item.extra == "Same Day Shipping"
             priceInRange && shippingMatch
         }
-        itemsUiState = ItemsUiState.Success(filteredItems)
+        _itemsUiState.value = ItemsUiState.Success(filteredItems)
     }
 
     init {
         getItems()
     }
 
-    fun getItems() {
+    fun getItems(forceRefresh: Boolean = false) {
         viewModelScope.launch {
-            itemsUiState = ItemsUiState.Loading
-            itemsUiState = try {
-                allItems = repository.getAllItems()
-                if (allItems.isEmpty()) {
-                    ItemsUiState.Error // Both local and remote data are empty
-                } else {
-                    ItemsUiState.Success(allItems) // Data fetched successfully
+            _itemsUiState.value = ItemsUiState.Loading
+
+            // Check if we have valid cached data
+            if (!forceRefresh && System.currentTimeMillis() - lastFetchTime < cacheTimeout && cachedItems.isNotEmpty()) {
+                _itemsUiState.value = ItemsUiState.Success(cachedItems)
+                return@launch
+            }
+
+            try {
+                withContext(Dispatchers.IO) {
+                    val items = repository.getAllItems()
+                    lastFetchTime = System.currentTimeMillis()
+                    cachedItems = items
+
+                    withContext(Dispatchers.Main) {
+                        if (items.isEmpty()) {
+                            _itemsUiState.value = ItemsUiState.Error
+                        } else {
+                            _itemsUiState.value = ItemsUiState.Success(items)
+                        }
+                    }
                 }
             } catch (e: Exception) {
-                ItemsUiState.Error // Handle exceptions if any
+                _itemsUiState.value = ItemsUiState.Error
             }
         }
     }
 
     fun filterItems(query: String) {
-        itemsUiState = ItemsUiState.Loading
+        _itemsUiState.value = ItemsUiState.Loading
         if (query.isEmpty()) {
-            itemsUiState = ItemsUiState.Success(allItems)
+            _itemsUiState.value = ItemsUiState.Success(cachedItems)
             return
         }
-        val filteredItems = allItems.filter { item ->
+        val filteredItems = cachedItems.filter { item ->
             item.name.contains(query, ignoreCase = true)
         }
-        itemsUiState = ItemsUiState.Success(filteredItems)
+        _itemsUiState.value = ItemsUiState.Success(filteredItems)
     }
 
     fun addItem(item: Item) {
         viewModelScope.launch {
             try {
                 repository.insertItem(item)
-                getItems()
+                getItems(forceRefresh = true)
             } catch (e: Exception) {
-                itemsUiState = ItemsUiState.Error
+                _itemsUiState.value = ItemsUiState.Error
             }
         }
     }

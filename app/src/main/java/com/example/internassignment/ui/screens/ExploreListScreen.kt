@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,14 +37,15 @@ fun ExploreListScreen(
     modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
+    val itemsState by viewModel.itemsUiState.collectAsState()
 
 
     LaunchedEffect(Unit) {
         viewModel.getItems()
     }
 
-    LaunchedEffect(searchText, viewModel.itemsUiState) {
-        if (viewModel.itemsUiState is ItemsUiState.Success && searchText.isNotEmpty()) {
+    LaunchedEffect(searchText, itemsState) {
+        if (itemsState is ItemsUiState.Success && searchText.isNotEmpty()) {
             viewModel.filterItems(searchText)
         }
     }
@@ -67,13 +69,13 @@ fun ExploreListScreen(
             }
         },
     ) { paddingValues ->
-        when (val itemsUiState = viewModel.itemsUiState) {
+        when (val currentState = itemsState) {
             is ItemsUiState.Loading -> {
                 LoadingScreen(modifier = modifier.fillMaxSize())
             }
 
             is ItemsUiState.Success -> {
-                if (itemsUiState.items.isEmpty() && searchText.isNotEmpty()) {
+                if (currentState.items.isEmpty() && searchText.isNotEmpty()) {
                     // Show no results found
                     Box(
                         modifier = Modifier
@@ -96,7 +98,7 @@ fun ExploreListScreen(
                                 bottom = 80.dp
                             )
                     ) {
-                        items(itemsUiState.items) { item ->
+                        items(currentState.items) { item ->
                             ListItemView(item)
                         }
                     }

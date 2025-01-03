@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,13 +35,14 @@ fun ExploreGridScreen(
     modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
+    val itemsState by viewModel.itemsUiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getItems()
     }
 
-    LaunchedEffect(searchText, viewModel.itemsUiState) {
-        if (viewModel.itemsUiState is ItemsUiState.Success && searchText.isNotEmpty()) {
+    LaunchedEffect(searchText, itemsState) {
+        if (itemsState is ItemsUiState.Success && searchText.isNotEmpty()) {
             viewModel.filterItems(searchText)
         }
     }
@@ -64,10 +66,13 @@ fun ExploreGridScreen(
             }
         }
     ) { paddingValues ->
-        when (val itemsUiState = viewModel.itemsUiState) {
-            is ItemsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        when (val currentState = itemsState) {
+            is ItemsUiState.Loading -> {
+                LoadingScreen(modifier = modifier.fillMaxSize())
+            }
+
             is ItemsUiState.Success -> {
-                if (itemsUiState.items.isEmpty() && searchText.isNotEmpty()) {
+                if (currentState.items.isEmpty() && searchText.isNotEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -91,7 +96,7 @@ fun ExploreGridScreen(
                                 bottom = 100.dp
                             )
                     ) {
-                        items(itemsUiState.items) { item ->
+                        items(currentState.items) { item ->
                             GridItemView(item)
                         }
                     }
