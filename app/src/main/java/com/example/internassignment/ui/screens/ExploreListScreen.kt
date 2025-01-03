@@ -62,6 +62,7 @@ fun ExploreListScreen(
                     sameDayShippingOnly = viewModel.sameDayShippingOnly,
                     onSameDayShippingChange = { viewModel.toggleSameDayShipping(it) },
                     onResetFilters = { viewModel.resetFilters() },
+                    onApply = { viewModel.applyFilters() }
                 )
             }
         },

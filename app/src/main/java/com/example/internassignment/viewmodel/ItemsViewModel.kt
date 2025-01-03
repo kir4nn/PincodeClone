@@ -51,12 +51,12 @@ class ItemsViewModel(
 
     fun updatePriceRange(range: ClosedFloatingPointRange<Float>) {
         priceRange = range
-        applyFilters()
+//        applyFilters()
     }
 
     fun toggleSameDayShipping(enabled: Boolean) {
         sameDayShippingOnly = enabled
-        applyFilters()
+//        applyFilters()
     }
 
     fun resetFilters() {
@@ -65,7 +65,7 @@ class ItemsViewModel(
         applyFilters()
     }
 
-    private fun applyFilters() {
+    fun applyFilters() {
         itemsUiState = ItemsUiState.Loading
         val filteredItems = allItems.filter { item ->
             val itemPrice = item.price.toFloatOrNull() ?: 0f

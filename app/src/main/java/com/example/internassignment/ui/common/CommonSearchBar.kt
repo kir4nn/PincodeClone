@@ -34,7 +34,8 @@ fun CommonSearchBar(
     sameDayShippingOnly: Boolean,
     onSameDayShippingChange: (Boolean) -> Unit,
     onResetFilters: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onApply: () -> Unit
 ) {
     Box {
         Column(
@@ -90,7 +91,7 @@ fun CommonSearchBar(
                 sameDayShippingOnly = sameDayShippingOnly,
                 onSameDayShippingChange = onSameDayShippingChange,
                 onCancel = onResetFilters,
-
+                onApply = onApply
             )
         }
     }
