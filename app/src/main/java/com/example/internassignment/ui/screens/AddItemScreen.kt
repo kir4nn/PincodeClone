@@ -61,10 +61,11 @@ fun AddItemScreen(
             val newItem = Item(
                 name = itemName,
                 price = itemPrice,
-                // Convert "None" to empty string, keep other values as is
                 extra = if (shippingMethod == "None") "" else shippingMethod
             )
             viewModel.addItem(newItem)
+            // Wait briefly to ensure the item is saved before navigating
+            viewModel.loadItems() // Force a refresh
             navController.navigate(NavigationItem.ExploreGrid.route) {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true

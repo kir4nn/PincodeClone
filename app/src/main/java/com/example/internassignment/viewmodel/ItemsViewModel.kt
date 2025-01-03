@@ -1,6 +1,7 @@
 package com.example.internassignment.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -78,21 +79,72 @@ class ItemsViewModel(
     }
 
     init {
-        getItems()
+        loadItems()
+    }
+
+    fun loadItems() {
+        viewModelScope.launch {
+            itemsUiState = ItemsUiState.Loading
+            try {
+                allItems = repository.getAllItems()
+                // Only show error if we have no items at all
+                itemsUiState = if (allItems.isEmpty()) {
+                    ItemsUiState.Error
+                } else {
+                    ItemsUiState.Success(allItems)
+                }
+            } catch (e: Exception) {
+                // If we have cached items, show them instead of error
+                val localItems = repository.getLocalItems()
+                itemsUiState = if (localItems.isNotEmpty()) {
+                    allItems = localItems
+                    ItemsUiState.Success(localItems)
+                } else {
+                    ItemsUiState.Error
+                }
+            }
+        }
     }
 
     fun getItems() {
         viewModelScope.launch {
             itemsUiState = ItemsUiState.Loading
-            itemsUiState = try {
+            try {
                 allItems = repository.getAllItems()
-                if (allItems.isEmpty()) {
-                    ItemsUiState.Error // Both local and remote data are empty
+                // Only show error if we have no items at all
+                itemsUiState = if (allItems.isEmpty()) {
+                    ItemsUiState.Error
                 } else {
-                    ItemsUiState.Success(allItems) // Data fetched successfully
+                    ItemsUiState.Success(allItems)
                 }
             } catch (e: Exception) {
-                ItemsUiState.Error // Handle exceptions if any
+                // If we have cached items, show them instead of error
+                val localItems = repository.getLocalItems()
+                itemsUiState = if (localItems.isNotEmpty()) {
+                    allItems = localItems
+                    ItemsUiState.Success(localItems)
+                } else {
+                    ItemsUiState.Error
+                }
+            }
+        }
+    }
+
+    fun refreshItems() {
+        viewModelScope.launch {
+            itemsUiState = ItemsUiState.Loading
+            try {
+                repository.refreshItems()
+                loadItems()  // Reload items after refresh
+            } catch (e: Exception) {
+                // If refresh fails but we have cached items, show them
+                val localItems = repository.getLocalItems()
+                itemsUiState = if (localItems.isNotEmpty()) {
+                    allItems = localItems
+                    ItemsUiState.Success(localItems)
+                } else {
+                    ItemsUiState.Error
+                }
             }
         }
     }
@@ -113,7 +165,11 @@ class ItemsViewModel(
         viewModelScope.launch {
             try {
                 repository.insertItem(item)
-                getItems()
+                // Immediately get local items to refresh the UI
+                Log.d("AddItem", "Item added successfully: $item")
+                val localItems = repository.getLocalItems()
+                allItems = localItems
+                itemsUiState = ItemsUiState.Success(localItems)
             } catch (e: Exception) {
                 itemsUiState = ItemsUiState.Error
             }

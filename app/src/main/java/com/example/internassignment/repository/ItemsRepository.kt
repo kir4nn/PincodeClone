@@ -7,4 +7,5 @@ interface ItemsRepository {
     suspend fun getLocalItems(): List<Item>
     suspend fun insertItem(item: Item)
     suspend fun getAllItems(): List<Item>
+    suspend fun refreshItems()
 }

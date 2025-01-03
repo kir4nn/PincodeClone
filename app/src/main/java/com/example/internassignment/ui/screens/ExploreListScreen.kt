@@ -34,10 +34,10 @@ fun ExploreListScreen(
     modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
-
+    var hasInitiallyLoaded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.getItems()
+        viewModel.loadItems()
     }
 
     LaunchedEffect(searchText, viewModel.itemsUiState) {
